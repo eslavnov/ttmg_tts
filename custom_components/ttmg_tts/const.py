@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-DOMAIN = "ttmg_tts"
-TITLE = "Talk To Me Goose TTS"
+DOMAIN = "google_cloud"
+TITLE = "Google Cloud"
 
 CONF_SERVICE_ACCOUNT_INFO = "service_account_info"
 CONF_KEY_FILE = "key_file"
 
 DEFAULT_LANG = "en-US"
-CONST_URL = "host"
+
 # TTS constants
 CONF_GENDER = "gender"
 CONF_VOICE = "voice"
@@ -19,9 +19,7 @@ CONF_PITCH = "pitch"
 CONF_GAIN = "gain"
 CONF_PROFILES = "profiles"
 CONF_TEXT_TYPE = "text_type"
-CONF_TIMEOUT= "TTS timeout, seconds"
 
-DEFAULT_TIMEOUT = 10
 DEFAULT_SPEED = 1.0
 DEFAULT_PITCH = 0
 DEFAULT_GAIN = 0
