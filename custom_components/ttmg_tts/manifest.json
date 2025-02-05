@@ -3,6 +3,7 @@
   "name": "Talk To Me Goose TTS",
   "codeowners": ["@eslavnov"],
   "config_flow": true,
+  "dependencies": ["file_upload"],
   "documentation": "https://www.home-assistant.io/integrations/llm_stream_tts",
   "integration_type": "service",
   "iot_class": "cloud_push",
