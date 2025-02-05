@@ -28,7 +28,6 @@ from homeassistant.helpers.selector import (
 
 from .const import (
     CONF_KEY_FILE,
-    CONF_URL,
     CONF_SERVICE_ACCOUNT_INFO,
     CONF_STT_MODEL,
     DEFAULT_LANG,
@@ -50,7 +49,9 @@ UPLOADED_KEY_FILE = "uploaded_key_file"
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_URL, default="http://127.0.0.1:8888"): str,
+        vol.Required(UPLOADED_KEY_FILE): FileSelector(
+            FileSelectorConfig(accept=".json,application/json")
+        )
     }
 )
 
