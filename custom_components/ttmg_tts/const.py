@@ -9,7 +9,7 @@ CONF_SERVICE_ACCOUNT_INFO = "service_account_info"
 CONF_KEY_FILE = "key_file"
 
 DEFAULT_LANG = "en-US"
-
+CONST_URL = "host"
 # TTS constants
 CONF_GENDER = "gender"
 CONF_VOICE = "voice"
