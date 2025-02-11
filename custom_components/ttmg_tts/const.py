@@ -1,5 +1,3 @@
-"""Constants for the Google Cloud component."""
-
 from __future__ import annotations
 
 DOMAIN = "ttmg_tts"

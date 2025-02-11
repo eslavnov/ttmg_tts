@@ -1,5 +1,3 @@
-"""The google_cloud component."""
-
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry

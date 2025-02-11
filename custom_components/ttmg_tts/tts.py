@@ -1,16 +1,9 @@
-"""Support for the Google Cloud TTS service."""
-
 from __future__ import annotations
 
 import logging
 from pathlib import Path
 from typing import Any, cast
-
-from google.api_core.exceptions import GoogleAPIError, Unauthenticated
-from google.cloud import texttospeech
 import voluptuous as vol
-
-import aiohttp
 
 from homeassistant.components.tts import (
     CONF_LANG,
@@ -30,194 +23,47 @@ from .const import (
     DOMAIN,
     CONF_URL,
 )
-# from .helpers import async_tts_voices, tts_options_schema, tts_platform_schema
 
 _LOGGER = logging.getLogger(__name__)
-
-# PLATFORM_SCHEMA = TTS_PLATFORM_SCHEMA.extend(tts_platform_schema().schema)
-
-
-# async def async_get_engine(
-#     hass: HomeAssistant,
-#     config: ConfigType,
-#     discovery_info: DiscoveryInfoType | None = None,
-# ) -> Provider | None:
-#     """Set up Google Cloud TTS component."""
-#     if key_file := config.get(CONF_KEY_FILE):
-#         key_file = hass.config.path(key_file)
-#         if not Path(key_file).is_file():
-#             _LOGGER.error("File %s doesn't exist", key_file)
-#             return None
-#     if key_file:
-#         client = texttospeech.TextToSpeechAsyncClient.from_service_account_file(
-#             key_file
-#         )
-#         if not hass.config_entries.async_entries(DOMAIN):
-#             _LOGGER.debug("Creating config entry by importing: %s", config)
-#             hass.async_create_task(
-#                 hass.config_entries.flow.async_init(
-#                     DOMAIN, context={"source": SOURCE_IMPORT}, data=config
-#                 )
-#             )
-#     else:
-#         client = texttospeech.TextToSpeechAsyncClient()
-#     try:
-#         voices = await async_tts_voices(client)
-#     except GoogleAPIError as err:
-#         _LOGGER.error("Error from calling list_voices: %s", err)
-#         return None
-#     return GoogleCloudTTSProvider(
-#         client,
-#         voices,
-#         config.get(CONF_LANG, DEFAULT_LANG),
-#         tts_options_schema(config, voices),
-#     )
-
 
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Google Cloud text-to-speech."""
     async_add_entities(
         [
-            GoogleCloudTTSEntity(
+            TTMGTTSEntity(
                 config_entry,
             )
         ]
     )
 
 
-class BaseGoogleCloudProvider:
-    """The Google Cloud TTS base provider."""
+class BaseTTMGProvider:
 
     def __init__(
         self,
-        # client: texttospeech.TextToSpeechAsyncClient,
-        # voices: dict[str, list[str]],
-        # language: str,
         options_schema: vol.Schema,
     ) -> None:
-        """Init Google Cloud TTS base provider."""
-        # self._client = client
-        # self._voices = voices
-        # self._language = language
         self._options_schema = options_schema
-
-    # @property
-    # def supported_languages(self) -> list[str]:
-    #     """Return a list of supported languages."""
-    #     return list(self._voices)
-
-    # @property
-    # def default_language(self) -> str:
-    #     """Return the default language."""
-    #     return self._language
-
-    # @property
-    # def supported_options(self) -> list[str]:
-    #     """Return a list of supported options."""
-    #     return [option.schema for option in self._options_schema.schema]
-
-    # @property
-    # def default_options(self) -> dict[str, Any]:
-    #     """Return a dict including default options."""
-    #     return cast(dict[str, Any], self._options_schema({}))
 
     @callback
     def async_get_supported_voices(self, language: str) -> list[Voice] | None:
-        """Return a list of supported voices for a language."""
-        # if not (voices := self._voices.get(language)):
-        #     return None
         return None
 
     async def _async_get_tts_audio(
         self,
-        # message: str,
-        # language: str,
-        # options: dict[str, Any],
     ) -> TtsAudioType:
-        """Load TTS from Google Cloud."""
-        # try:
-        #     options = self._options_schema(options)
-        # except vol.Invalid as err:
-        #     _LOGGER.error("Error: %s when validating options: %s", err, options)
-        #     return None, None
-
-        # encoding: texttospeech.AudioEncoding = texttospeech.AudioEncoding[
-        #     options[CONF_ENCODING]
-        # ]  # type: ignore[misc]
-        # gender: texttospeech.SsmlVoiceGender | None = texttospeech.SsmlVoiceGender[
-        #     options[CONF_GENDER]
-        # ]  # type: ignore[misc]
-        # voice = options[CONF_VOICE]
-        # if voice:
-        #     gender = None
-        #     if not voice.startswith(language):
-        #         language = voice[:5]
-
-        # request = texttospeech.SynthesizeSpeechRequest(
-        #     input=texttospeech.SynthesisInput(**{options[CONF_TEXT_TYPE]: message}),
-        #     voice=texttospeech.VoiceSelectionParams(
-        #         language_code=language,
-        #         ssml_gender=gender,
-        #         name=voice,
-        #     ),
-        #     # Avoid: "This voice does not support speaking rate or pitch parameters at this time."
-        #     # by not specifying the fields unless they differ from the defaults
-        #     audio_config=texttospeech.AudioConfig(
-        #         audio_encoding=encoding,
-        #         speaking_rate=(
-        #             options[CONF_SPEED]
-        #             if options[CONF_SPEED] != DEFAULT_SPEED
-        #             else None
-        #         ),
-        #         pitch=(
-        #             options[CONF_PITCH]
-        #             if options[CONF_PITCH] != DEFAULT_PITCH
-        #             else None
-        #         ),
-        #         volume_gain_db=(
-        #             options[CONF_GAIN] if options[CONF_GAIN] != DEFAULT_GAIN else None
-        #         ),
-        #         effects_profile_id=options[CONF_PROFILES],
-        #     ),
-        # )
-
-        # tts_timeout = options[CONF_TIMEOUT]
-        # if not tts_timeout:
-        #     tts_timeout = DEFAULT_TIMEOUT
-        # response = await self._client.synthesize_speech(request, timeout=tts_timeout)
-        # url = config_entry.data.get(CONF_URL)
-        # async with aiohttp.ClientSession() as session:
-        #   async with session.post('http://192.168.201.10:8888/preload', json={"text": message}) as resp:
-        #       if resp.status != 200:
-        #           # Handle error
-        #           pass
-        # if encoding == texttospeech.AudioEncoding.MP3:
-        #     extension = "mp3"
-        # elif encoding == texttospeech.AudioEncoding.OGG_OPUS:
-        #     extension = "ogg"
-        # else:
-        #     extension = "wav"
-
         return "mp3", None
 
 
-class GoogleCloudTTSEntity(BaseGoogleCloudProvider, TextToSpeechEntity):
-    """The Google Cloud TTS entity."""
-
+class TTMGTTSEntity(BaseTTMGProvider, TextToSpeechEntity):
+  
     def __init__(
         self,
         entry: ConfigEntry,
-        # client: texttospeech.TextToSpeechAsyncClient,
-        # voices: dict[str, list[str]],
-        # language: str,
-        # options_schema: vol.Schema,
     ) -> None:
-        """Init Google Cloud TTS entity."""
-        # super().__init__(client, voices, language, options_schema)
         self._attr_unique_id = f"{entry.entry_id}"
         self._attr_name = entry.title
         self._attr_device_info = dr.DeviceInfo(
@@ -226,55 +72,33 @@ class GoogleCloudTTSEntity(BaseGoogleCloudProvider, TextToSpeechEntity):
             model="TTS",
             entry_type=dr.DeviceEntryType.SERVICE,
         )
-        # self._attr_default_language = language  # Set the default language attribute
-        # self._language = language  # Initialize the _language attribute
         self._attr_default_language = "en-US"  
         self._attr_supported_languages = ["en-US"]
         self._entry = entry
 
     @property
     def default_language(self) -> str:
-        """Return the default language."""
         return "en-US"
       
     @property
     def supported_languages(self) -> list[str]:
-        """Return the supported languages."""
         return self._attr_supported_languages
       
     async def async_get_tts_audio(
         self, 
     ) -> TtsAudioType:
-        """Load TTS from Google Cloud."""
-        # try:
-        #     return await self._async_get_tts_audio(message, language, options)
-        # except GoogleAPIError as err:
-        #     _LOGGER.error("Error occurred during Google Cloud TTS call: %s", err)
-        #     if isinstance(err, Unauthenticated):
-        #         self._entry.async_start_reauth(self.hass)
         return None, None
 
 
-class GoogleCloudTTSProvider(BaseGoogleCloudProvider, Provider):
-    """The Google Cloud TTS API provider."""
-
+class TTMGTTSProvider(BaseTTMGProvider, Provider):
     def __init__(
         self,
-        # client: texttospeech.TextToSpeechAsyncClient,
-        # voices: dict[str, list[str]],
-        # language: str,
         options_schema: vol.Schema,
     ) -> None:
-        """Init Google Cloud TTS service."""
         super().__init__(options_schema)
-        self.name = "Google Cloud TTS"
+        self.name = "TTMG TTS"
 
     async def async_get_tts_audio(
         self,
     ) -> TtsAudioType:
-        """Load TTS from Google Cloud."""
-        # try:
-        #     return await self._async_get_tts_audio(message, language, options)
-        # except GoogleAPIError as err:
-        #     _LOGGER.error("Error occurred during Google Cloud TTS call: %s", err)
         return None, None
