@@ -1,3 +1,4 @@
+"""Config flow for TTMG TTS integration."""
 import voluptuous as vol
 from homeassistant import config_entries
 from .const import CONF_URL, DOMAIN

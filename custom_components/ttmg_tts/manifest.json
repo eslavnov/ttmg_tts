@@ -1,12 +1,11 @@
 {
   "domain": "ttmg_tts",
-  "name": "Talk To Me Goose TTS",
-  "codeowners": ["@eslavnov"],
+  "name": "Gtest",
+  "codeowners": [],
   "config_flow": true,
-  "dependencies": ["file_upload"],
   "documentation": "https://github.com/eslavnov/ttmg_tts",
-  "integration_type": "service",
   "iot_class": "cloud_push",
-  "requirements": [],
-  "version":"1.0.1"
+  "loggers": ["ttmg_tts"],
+  "requirements": [""],
+  "version": "1.0.2"
 }
