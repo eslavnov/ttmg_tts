@@ -1,7 +1,7 @@
 # Talk To Me Goose (HASS Integration - TTS)
 ![Logo](assets/logo.jpg)
 
-This is a custom integration for Home Assistant to work with [Talk To Me Goose Server](https://github.com/eslavnov/ttmg_server). This is a dummy TTS integration that does not do much at this point, but it is recommended to install it if you are using TTMG Server.
+This is a custom integration for Home Assistant to work with [Talk To Me Goose Server](https://github.com/eslavnov/ttmg_server). It will call TTMG Server and it is needed for things like local agent's responses.
 
 **Installation:**
 1. If you are using [HACS](https://www.hacs.xyz/), you can add this repo as a custom repository with the type "Integration":
@@ -12,13 +12,9 @@ This is a custom integration for Home Assistant to work with [Talk To Me Goose S
 
 ## Change log
 
-### v1.0.2
+### v1.0.1
 **Added**
 - Local conversation agent's responses are now working too!
-
-### v1.0.1
-**Changed**
-- Code cleanup
 
 ### v1.0.0
 **Added**
