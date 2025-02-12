@@ -1,11 +1,11 @@
 {
   "domain": "ttmg_tts",
   "name": "TTMG TTS",
-  "codeowners": [@eslavnov],
+  "codeowners": ["@eslavnov"],
   "config_flow": true,
   "documentation": "https://github.com/eslavnov/ttmg_tts",
   "iot_class": "cloud_push",
   "loggers": ["ttmg_tts"],
-  "requirements": [""],
-  "version": "1.0.2"
+  "requirements": [],
+  "version": "1.0.1"
 }
